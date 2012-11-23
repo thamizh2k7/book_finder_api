@@ -22,6 +22,16 @@ class BookFinder
 				result[fk_key]=fk_val
 			end
 		end
+		page.search("#main-image-id").each do |img_id|
+			img_tag=img_id.search("img")
+			img_url=img_tag.attribute("src")
+			puts img_url
+			result["img_url"]=img_url.to_s
+		end
+		price=page.search("#fk-mprod-list-id").text()
+		result["price"]=price.delete("Rs. ")
+		result["availability"]=page.search("#fk-stock-info-id").text()
+		result["description"]=page.search("#description").text()
 		result
 	end
 end
