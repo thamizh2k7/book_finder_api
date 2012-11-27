@@ -22,6 +22,10 @@ class BookFinder
 				result[fk_key]=fk_val
 			end
 		end
+		college = page.search(".fk-lbreadbcrumb a")[4]
+		result['college']=college.search("span").text()
+		stream = page.search(".fk-lbreadbcrumb a")[5]
+		result['stream']= stream.search("span").text()
 		page.search("#main-image-id").each do |img_id|
 			img_tag=img_id.search("img")
 			img_url=img_tag.attribute("src")
