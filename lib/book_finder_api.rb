@@ -23,19 +23,26 @@ class BookFinder
 			end
 		end
 		college = page.search(".fk-lbreadbcrumb a")[4]
-		result['college']=college.search("span").text()
+		if college
+			result['college']=college.search("span").text()
+		end
 		stream = page.search(".fk-lbreadbcrumb a")[5]
-		result['stream']= stream.search("span").text()
+		if stream
+			result['stream']= stream.search("span").text()
+		end
 		page.search("#main-image-id").each do |img_id|
 			img_tag=img_id.search("img")
 			img_url=img_tag.attribute("src")
-			puts img_url
 			result["img_url"]=img_url.to_s
 		end
 		price=page.search("#fk-mprod-list-id").text()
-		result["price"]=price.delete("Rs. ")
+		if price ==""	
+			price = page.search("#fk-mprod-our-id").text()
+		end
+		price.delete!("Rs. ")
+		result["price"]=price
 		result["availability"]=page.search("#fk-stock-info-id").text()
-		result["description"]=page.search("#description").text()
+		result["description"]=page.search("#description").text().force_encoding("UTF-8")
 		result
 	end
 end
