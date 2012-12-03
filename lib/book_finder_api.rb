@@ -42,7 +42,7 @@ class BookFinder
 		price.delete!("Rs. ")
 		result["price"]=price
 		result["availability"]=page.search("#fk-stock-info-id").text()
-		result["description"]=page.search("#description").text().force_encoding("UTF-8")
+		result["description"]=page.search("#description").inner_html().force_encoding("UTF-8")
 		result
 	end
 end
