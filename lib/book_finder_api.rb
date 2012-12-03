@@ -14,6 +14,7 @@ class BookFinder
 		search_url="http://www.flipkart.com/search/a/all?query=#{isbn}"
 		result=Hash.new
 		agent =Mechanize.new
+		agent.redirect_ok
 		page = agent.get(search_url)
 		page.search(".fk-specs-type2 tr").each do |tr|
 			fk_key=tr.search(".specs-key").text()
