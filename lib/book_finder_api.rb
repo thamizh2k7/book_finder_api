@@ -27,8 +27,12 @@ class BookFinder
 		#getting the titles and author
  		title_div=page.search(".mprod-summary-title")
  		result["Book"]=title_div.search("h1").text()
- 		result["Author"]=title_div.search("h2").text()
-
+ 		book_authors=[]
+ 		authors=title_div.search("h2")
+ 		authors.each do |author|
+ 			book_authors << author.text()
+ 		end
+ 		result["Author"]=book_authors.join(",")
 		#storing the resluts
 		page.search(".fk-specs-type2 tr").each do |tr|
 			fk_key=tr.search(".specs-key").text()
@@ -63,18 +67,24 @@ class BookFinder
 			result["img_url"]=img_url.to_s
 		end
 		puts "#{result['img_url']} is image url"
-		if result["img_url"].nil?
-				img_tag=page.search(".fk-mproduct .mprodimg-section img")
+		if result["img_url"]==""
+				img_tag=page.search("#mprodimg-id")
+				img=img_tag.search("img")
 				puts img_tag
 				puts "inside"
-				img_url=img_tag.attribute("src")
+				img_url=img.attribute("src")
 				result["img_url"]=img_url.to_s
 		end
 
 		#storing the price
 		price=page.search("#fk-mprod-list-id").text()
 		if price ==""	
+			puts "first price empty"
 			price = page.search("#fk-mprod-our-id").text()
+			if price==""
+				puts "second price"
+				price=page.search(".fk-font-finalprice").text()
+			end
 		end
 		price.delete!("Rs. ")
 		result["price"]=price
