@@ -42,12 +42,17 @@ class BookFinder
 		breadcrumb = page.search(".fk-lbreadbcrumb a")
 		generals = ['Other General','Others Engineering']
 		
+		
 		if breadcrumb.count >0
 			result['college']=breadcrumb[4].search("span").text()
-			result['stream']= breadcrumb[5].search("span").text()
+			if(breadcrumb[5])
+				result['stream']= breadcrumb[5].search("span").text()
+			end
 			if generals.include? (result['college'])
 				result['college']=breadcrumb[5].search("span").text()
-				result['stream']= breadcrumb[6].search("span").text()
+				if(breadcrumb[6])
+					result['stream']= breadcrumb[6].search("span").text()
+				end
 			end
 		end
 
@@ -56,6 +61,14 @@ class BookFinder
 			img_tag=img_id.search("img")
 			img_url=img_tag.attribute("src")
 			result["img_url"]=img_url.to_s
+		end
+
+		if result["img_url"]==""
+			page.search("#mprodimg-id").each do |img_id|
+				img_tag=img_id.search("img")
+				img_url=img_tag.attribute("src")
+				result["img_url"]=img_url.to_s
+			end
 		end
 
 		#storing the price
