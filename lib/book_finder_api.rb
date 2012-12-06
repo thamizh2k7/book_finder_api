@@ -62,13 +62,13 @@ class BookFinder
 			img_url=img_tag.attribute("src")
 			result["img_url"]=img_url.to_s
 		end
-
-		if result["img_url"]==""
-			page.search("#mprodimg-id").each do |img_id|
-				img_tag=img_id.search("img")
+		puts "#{result['img_url']} is image url"
+		if result["img_url"].nil?
+				img_tag=page.search(".fk-mproduct .mprodimg-section img")
+				puts img_tag
+				puts "inside"
 				img_url=img_tag.attribute("src")
 				result["img_url"]=img_url.to_s
-			end
 		end
 
 		#storing the price
