@@ -26,6 +26,7 @@ class BookFinder
 
 		#getting the titles and author
  		title_div=page.search(".mprod-summary-title")
+ 		puts "BOOK:#{title_div.search('h1').text()}"
  		result["Book"]=title_div.search("h1").text()
  		book_authors=[]
  		authors=title_div.search("h2")
@@ -48,48 +49,38 @@ class BookFinder
 		
 		
 		if breadcrumb.count >0
-			result['college']=breadcrumb[4].search("span").text()
-			if(breadcrumb[5])
-				result['stream']= breadcrumb[5].search("span").text()
-			end
+			result['college']=breadcrumb[4].search("span").text() if breadcrumb[4]
+			result['stream']= breadcrumb[5].search("span").text() if breadcrumb[5]
 			if generals.include? (result['college'])
 				result['college']=breadcrumb[5].search("span").text()
-				if(breadcrumb[6])
-					result['stream']= breadcrumb[6].search("span").text()
-				end
+				result['stream']= breadcrumb[6].search("span").text() if(breadcrumb[6])
 			end
 		end
 
 		#storing the image
-		page.search("#main-image-id").each do |img_id|
-			img_tag=img_id.search("img")
-			img_url=img_tag.attribute("src")
-			result["img_url"]=img_url.to_s
-		end
+		img_tag=page.search("#mprodimg-id")
+		img = img_tag.search("img")
+		img_url = img.attribute("data-src")
+		result["img_url"]=img_url.to_s
 		puts "#{result['img_url']} is image url"
 		if result["img_url"]==""
-				img_tag=page.search("#mprodimg-id")
-				img=img_tag.search("img")
-				puts img_tag
-				puts "inside"
-				img_url=img.attribute("src")
-				result["img_url"]=img_url.to_s
+			page.search("#main-image-id").each do |img_id|
+				img_tag=img_id.search("img")
+				img_url=img_tag.attribute("src")
+				result["img_url"]=img_url.to_s	
+				puts "Secondary Image: #{result['img_url']} is image url"
+			end
 		end
 
 		#storing the price
-		price=page.search("#fk-mprod-list-id").text()
-		if price ==""	
-			puts "first price empty"
-			price = page.search("#fk-mprod-our-id").text()
-			if price==""
-				puts "second price"
-				price=page.search(".fk-font-finalprice").text()
-			end
-		end
+		price = page.search("#fk-mprod-list-id").text()
+		price = page.search("#fk-mprod-our-id").text() if price ==""	
+		price = page.search(".fk-font-finalprice").text() if price ==""	
+		
 		price.delete!("Rs. ")
-		result["price"]=price
-		result["availability"]=page.search("#fk-stock-info-id").text()
-		result["description"]=page.search("#description").inner_html().force_encoding("UTF-8")
+		result["price"] = price
+		result["availability"] = page.search("#fk-stock-info-id").text()
+		result["description"] = page.search("#description").inner_html().force_encoding("UTF-8")
 		result["description"].gsub!('<a href="#">top</a>',"")
 		result
 	end
