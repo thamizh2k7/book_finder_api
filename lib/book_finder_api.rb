@@ -59,19 +59,24 @@ class BookFinder
 
 		#storing the image
 		img_tag=page.search("#mprodimg-id")
-		img = img_tag.search("img")
-		img_url = img.attribute("data-src")
-		result["img_url"]=img_url.to_s
-		puts "#{result['img_url']} is image url"
-		if result["img_url"]==""
+		puts "IMAGE:#{img_tag}"
+		unless img_tag.empty?
+			img = img_tag.search("img")
+			begin
+			img_url = img.attribute("data-src") 
+			result["img_url"]=img_url.to_s
+			rescue
+				result["img_url"]=""
+			end
+			puts "#{result['img_url']} is image url"
+		else
 			page.search("#main-image-id").each do |img_id|
 				img_tag=img_id.search("img")
 				img_url=img_tag.attribute("src")
-				result["img_url"]=img_url.to_s	
-				puts "Secondary Image: #{result['img_url']} is image url"
 			end
+			result["img_url"]=img_url.to_s	
+			puts "Secondary Image: #{result['img_url']} is image url"
 		end
-
 		#storing the price
 		price = page.search("#fk-mprod-list-id").text()
 		price = page.search("#fk-mprod-our-id").text() if price ==""	
