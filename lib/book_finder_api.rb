@@ -34,6 +34,12 @@ class BookFinder
  			book_authors << author.text()
  		end
  		result["Author"]=book_authors.join(",")
+ 		if result["Author"] ==""
+ 			title_div.search(".secondary-info a").each do |author|
+ 				book_authors << author.inner_html
+ 			end
+ 			result["Author"]=book_authors.join(",")
+ 		end
 		#storing the resluts
 		page.search(".fk-specs-type2 tr").each do |tr|
 			fk_key=tr.search(".specs-key").text()
